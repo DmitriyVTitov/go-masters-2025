@@ -1,5 +1,22 @@
 package generics
 
+import (
+	"os"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+)
+
+func init() {
+	log.Logger = zerolog.New(
+		zerolog.ConsoleWriter{
+			Out:        os.Stdout,
+			NoColor:    true,
+			TimeFormat: "2006-01-02 15:04:05",
+		},
+	).With().Timestamp().Logger().With().Caller().Logger()
+}
+
 // ***
 // Допустим, мы хотим написать алгоритм, который суммирует
 // все элементы слайса.
@@ -9,8 +26,8 @@ package generics
 // для каждого типа данных.
 // ***
 
-// sumSliceInt суммирует все элементы слайса int.
-func sumSliceInt(s []int) int {
+// sumSliceInts суммирует все элементы слайса int.
+func sumSliceInts(s []int) int {
 	var sum int
 	for _, v := range s {
 		sum += v
@@ -18,8 +35,8 @@ func sumSliceInt(s []int) int {
 	return sum
 }
 
-// sumSliceFloat суммирует все элементы слайса float64.
-func sumSliceFloat(s []float64) float64 {
+// sumSliceFloats суммирует все элементы слайса float64.
+func sumSliceFloats(s []float64) float64 {
 	var sum float64
 	for _, v := range s {
 		sum += v

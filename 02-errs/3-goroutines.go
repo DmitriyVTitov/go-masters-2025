@@ -3,6 +3,7 @@ package errs
 import (
 	"context"
 	"errors"
+	"fmt"
 	"math/rand/v2"
 	"sync"
 
@@ -30,7 +31,6 @@ func logError() {
 			log.Error().Err(err).Msg("не повезло")
 		} else {
 			log.Info().Msg("повезло")
-
 		}
 	}()
 
@@ -55,9 +55,9 @@ func errChan() {
 		close(errCh)
 	}()
 
-	for range 100 {
+	for i := range 100 {
 		go func() {
-			goroutine(errCh)
+			goroutine(i, errCh)
 			wg.Done()
 		}()
 	}
@@ -67,9 +67,9 @@ func errChan() {
 	}
 }
 
-func goroutine(errCh chan error) {
-	if rand.N(100) > 95 {
-		errCh <- errors.New("неудачное число")
+func goroutine(index int, errCh chan error) {
+	if rand.N(100) > 90 {
+		errCh <- fmt.Errorf("поток №%v: не повезло", index)
 	}
 }
 
@@ -84,7 +84,7 @@ func errGroup() {
 				return ctx.Err()
 			default:
 				if rand.N(100) > 80 {
-					return errors.New("неудачное число")
+					return errors.New("не повезло")
 				} else {
 					log.Info().Msg("горутина выполнилась успешно")
 					return nil

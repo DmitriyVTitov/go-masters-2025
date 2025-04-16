@@ -45,17 +45,14 @@ func basics() {
 	var t *T
 
 	// Интерфейс.
-	var r Reader
+	var reader Reader
 
 	// Типичный вопрос на собеседованиях про равенство интерфейсной переменной и nil.
-	if r == nil {
+	if reader == nil {
 		log.Info().Msg("r is nil")
 	} else {
 		log.Info().Msg("r is not nil")
 	}
-
-	r = t
-	log.Info().Msg("r = t")
 
 	if t == nil {
 		log.Info().Msg("t is nil")
@@ -63,13 +60,16 @@ func basics() {
 		log.Info().Msg("t is not nil")
 	}
 
-	if r == nil {
+	reader = t
+	log.Info().Msg("r = t")
+
+	if reader == nil {
 		log.Info().Msg("r is nil")
 	} else {
 		log.Info().Msg("r is not nil")
 	}
 
-	r.Read(nil)
+	reader.Read(nil)
 
 	// Проверка, что тип данных имплементирует интерфейс
 	// (используется в json.Marshal/Unmarshal).
@@ -81,7 +81,7 @@ func basics() {
 	}
 
 	// Type assertion (interface).
-	rw, ok := r.(ReadWriter)
+	rw, ok := reader.(ReadWriter)
 	if ok {
 		log.Info().Msg("r is ReadWriter")
 		rw.Write(nil)

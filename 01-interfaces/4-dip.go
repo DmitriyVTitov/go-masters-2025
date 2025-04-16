@@ -30,7 +30,7 @@ type Step interface {
 	Undo() error
 }
 
-func NewSaga() *Saga {
+func New() *Saga {
 	return &Saga{
 		state: StateNew,
 		steps: make([]Step, 0),

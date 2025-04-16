@@ -8,6 +8,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// ***
 // Задача на web crawler
 //
 // Используя тип данных Parser, нужно написать алгоритм обхода веб-страниц
@@ -17,6 +18,7 @@ type Parser interface {
 	Parse(url string) []string
 }
 
+// ***
 // Пакет для модульных тестов логики, зависящей от БД
 type DB interface {
 	GetUser(id int) (*User, error)

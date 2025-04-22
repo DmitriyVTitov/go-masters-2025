@@ -2,6 +2,10 @@ package generics
 
 import "time"
 
+// ***
+// Обобщенная структура.
+// ***
+
 // Результат измерения датчика.
 type Measure[T Numbers] struct {
 	// Время измерения.
@@ -27,5 +31,30 @@ func genericStruct() {
 	_, _ = temperatureMeasure, humidityMeasure
 }
 
-type GenericInterface struct {
+// ***
+// Обобщенный интерфейс.
+// ***
+
+type GenericInterface[T any] interface {
+	Print(T)
+}
+
+type GenericImplementation[T any] struct{}
+
+func (*GenericImplementation[T]) Print(v T) {
+	println(v)
+}
+
+// Обобщение переходит вверх по пути наследования.
+// Если вложенная структура обобщенная, то и внешняя должна быть обобщенной.
+type Inner[T any] struct {
+}
+
+type Outer[T any] struct {
+	inner Inner[T]
+}
+
+// Либо нужно определить конкретный тип.
+type OuterConcrete struct {
+	innerInt Inner[int]
 }

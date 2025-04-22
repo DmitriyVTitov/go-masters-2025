@@ -6,6 +6,8 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
+type myInt int
+
 type Numbers interface {
 	~int | int8 | int16 | int32 | int64 |
 		float32 | float64
@@ -22,8 +24,6 @@ func addIntegers[T constraints.Integer](a, b T) T {
 type T1 struct{}
 
 type T2 struct{}
-
-type myInt int
 
 func (i myInt) String() string {
 	return fmt.Sprintf("%v", int(i))

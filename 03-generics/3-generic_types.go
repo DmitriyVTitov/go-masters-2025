@@ -48,6 +48,7 @@ func (*GenericImplementation[T]) Print(v T) {
 // Обобщение переходит вверх по пути наследования.
 // Если вложенная структура обобщенная, то и внешняя должна быть обобщенной.
 type Inner[T any] struct {
+	Value T
 }
 
 type Outer[T any] struct {

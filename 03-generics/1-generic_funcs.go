@@ -80,11 +80,12 @@ func sumSliceAny(slice any) float64 {
 // В данном случае мы говорим, что T может быть любым типом.
 
 // sumSlice суммирует все элементы слайса любого из указанных типов.
-func sumSlice[T int | float64](s []T) T {
+func sumSlice[T int | float64 | float32 | byte | string](s []T) T {
 	var sum T
 	for _, v := range s {
 		sum += v
 	}
+
 	return sum
 }
 

@@ -10,12 +10,24 @@ import (
 // Универсальная функция для раскодирования тела HTTP-запроса
 // из формата JSON в любой тип данных.
 // ***
-func decodeRequest[T any](r *http.Request) (*T, error) {
+
+type Validator interface {
+	Validate() error
+}
+
+func decodeAndValidateRequest[T Validator](r *http.Request) (*T, error) {
 	var req T
+
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		return nil, err
 	}
+
+	err = req.Validate()
+	if err != nil {
+		return nil, err
+	}
+
 	return &req, nil
 }
 
@@ -69,13 +81,13 @@ func (q *Q[T]) Len() int {
 // ***
 // FanIn объединяет несколько входных каналов в один выходной.
 // ***
-func FanIn[T any](channels ...<-chan T) <-chan T {
-	out := make(chan T)
+func FanIn(channels ...<-chan int) <-chan int {
+	out := make(chan int)
 
 	var wg sync.WaitGroup
 
 	// Определяем функцию, которая читает данные из канала и передаёт их в выходной канал.
-	worker := func(c <-chan T) {
+	worker := func(c <-chan int) {
 		defer wg.Done()
 		for value := range c {
 			out <- value

@@ -35,12 +35,8 @@ type ErrBadRequest struct {
 
 func NewErrBadRequest(message string) *ErrBadRequest {
 	return &ErrBadRequest{
-		BaseError: BaseError{
-			Message: message,
-			Time:    time.Now(),
-		},
+		BaseError: *NewBaseError(message),
 	}
-
 }
 
 type ErrUnauthorized struct {
@@ -49,10 +45,7 @@ type ErrUnauthorized struct {
 
 func NewErrUnauthorized(message string) *ErrUnauthorized {
 	return &ErrUnauthorized{
-		BaseError: BaseError{
-			Message: message,
-			Time:    time.Now(),
-		},
+		BaseError: *NewBaseError(message),
 	}
 }
 

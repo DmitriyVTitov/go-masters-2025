@@ -26,7 +26,7 @@ type T2 struct{}
 type myInt int
 
 func (i myInt) String() string {
-	return fmt.Sprintf("%v", i)
+	return fmt.Sprintf("%v", int(i))
 }
 
 type Mixed interface {

@@ -58,15 +58,15 @@ func caller() {
 			log.Error().Err(err).Msg("error in func basics()")
 		}
 
+		// Проверка того, что в цепочке ошибок есть конкретный экземпляр ошибки.
+		if errors.Is(err, errMyError) {
+			log.Error().Err(err).Msgf("error IS errMyError = true; code: %v", errMyError.code)
+		}
+
 		// Проверка того, что в цепочке ошибок есть ошибка определённого типа данных.
 		var e *myError
 		if errors.As(err, &e) {
 			log.Error().Err(e).Msgf("error AS *myError = true; code: %v", e.code)
-		}
-
-		// Проверка того, что в цепочке ошибок есть конкретный экземпляр ошибки.
-		if errors.Is(err, errMyError) {
-			log.Error().Err(err).Msgf("error IS errMyError = true; code: %v", e.code)
 		}
 	}
 }

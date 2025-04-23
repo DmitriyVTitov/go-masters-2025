@@ -81,13 +81,13 @@ func (q *Q[T]) Len() int {
 // ***
 // FanIn объединяет несколько входных каналов в один выходной.
 // ***
-func FanIn(channels ...<-chan int) <-chan int {
-	out := make(chan int)
+func FanIn[T any](channels ...<-chan T) <-chan T {
+	out := make(chan T)
 
 	var wg sync.WaitGroup
 
 	// Определяем функцию, которая читает данные из канала и передаёт их в выходной канал.
-	worker := func(c <-chan int) {
+	worker := func(c <-chan T) {
 		defer wg.Done()
 		for value := range c {
 			out <- value

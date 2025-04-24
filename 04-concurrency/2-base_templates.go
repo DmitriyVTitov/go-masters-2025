@@ -22,6 +22,37 @@ func writeOnlyChan(ch chan<- int) {
 	ch <- 10
 }
 
+// Неблокирующая запись в канал.
+func nonBlockingWrite() {
+	ch := make(chan int)
+
+	select {
+	case ch <- 10:
+		log.Info().Msg("Запись в канал прошла успешно")
+	default:
+		log.Info().Msg("Канал заполнен, запись невозможна")
+	}
+
+	close(ch)
+}
+
+// Шаблон "ожидание завершения горутин".
+// Реализуется с помощью WaitGroup
+func waitGroup() {
+	var wg sync.WaitGroup
+
+	for i := range 10 {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			log.Info().Msgf("Горутина %v завершила работу", i)
+		}(i)
+	}
+
+	wg.Wait()
+	log.Info().Msg("Все горутины завершили работу")
+}
+
 // Шаблон "семафор".
 // Шаблон можно реализовать с помощью буферизованного канала,
 // где размер буфера определяет количество разрешений (permits).
@@ -48,18 +79,4 @@ func sema() {
 	}
 
 	wg.Wait()
-}
-
-// Неблокирующая запись в канал.
-func nonBlockingWrite() {
-	ch := make(chan int)
-
-	select {
-	case ch <- 10:
-		log.Info().Msg("Запись в канал прошла успешно")
-	default:
-		log.Info().Msg("Канал заполнен, запись невозможна")
-	}
-
-	close(ch)
 }

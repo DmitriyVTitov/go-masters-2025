@@ -1,6 +1,7 @@
 package concurrency
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
@@ -143,4 +144,39 @@ func pipelineExample() {
 	for num := range result {
 		fmt.Printf("Результат: %d\n", num)
 	}
+}
+
+// ***
+// Пример использования пакета context в Go для управления временем
+// выполнения горутины.
+// ***
+
+// Функция, которая выполняет работу и учитывает контекст
+func doWork(ctx context.Context) {
+	for {
+		select {
+		case <-ctx.Done():
+			fmt.Println("Операция отменена:", ctx.Err())
+			return
+		default:
+			// Чтобы учитывать контекст при длительных операциях,
+			// в горутине должен быть цикл и операция должна
+			// состоять из небольших квантов работы.
+			fmt.Println("Работа выполняется...")
+			time.Sleep(500 * time.Millisecond) // Имитация работы
+		}
+	}
+}
+
+func useContext() {
+	// Создаем контекст с тайм-аутом 2 секунды
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+
+	// Запускаем горутину с управляемым контекстом
+	go doWork(ctx)
+
+	// Ожидаем завершения
+	time.Sleep(3 * time.Second)
+	fmt.Println("Основная функция завершена")
 }

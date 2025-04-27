@@ -19,8 +19,8 @@ func main() {
 	client := api.NewClient(addr, http.DefaultClient)
 
 	// Указываем модель, которую будем использовать
-	//model := "qwen2.5:1.5b" // Можно изменить на любую другую установленную модель
-	model := "qwen2.5-coder:7b"
+	model := "qwen2.5:1.5b" // Можно изменить на любую другую установленную модель
+	//model := "qwen2.5-coder:7b"
 
 	ctx := context.Background()
 

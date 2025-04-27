@@ -3,6 +3,7 @@ package concurrency
 import (
 	"context"
 	"fmt"
+	"runtime"
 	"sync"
 	"time"
 )
@@ -22,8 +23,8 @@ func workersPool() {
 	// 2. Запускаем пул воркеров (например, 3 горутины).
 	var wg sync.WaitGroup
 
-	numWorkers := 3
-	for i := 1; i <= numWorkers; i++ {
+	numWorkers := runtime.GOMAXPROCS(-1)
+	for i := range numWorkers {
 		wg.Add(1)
 		go worker(i, tasks, results, &wg)
 	}
@@ -39,7 +40,7 @@ func workersPool() {
 	}()
 
 	// 4. Отправляем задачи в канал.
-	for i := 1; i <= 5; i++ {
+	for i := 1; i <= 10; i++ {
 		tasks <- Task(fmt.Sprintf("Задание №%d", i))
 	}
 	close(tasks) // Закрываем канал задач (воркеры завершатся после выполнения всех задач).
@@ -57,7 +58,6 @@ func worker(id int, tasks <-chan Task, results chan<- string, wg *sync.WaitGroup
 	for task := range tasks {
 		// Имитируем обработку задачи (например, задержку).
 		time.Sleep(1 * time.Second)
-		//fmt.Printf("Воркер %d: обработал задачу %s\n", id, task)
 		results <- fmt.Sprintf("Воркер %d: обработал задачу %s", id, task)
 	}
 }
@@ -133,7 +133,7 @@ func pipelineExample() {
 	// 3. Собираем пайплайн: Генератор -> Умножение на 2 -> Добавление 10.
 	pipeline := Pipeline(
 		multiply(2),
-		add(10),
+		add(5),
 	)
 
 	// 4. Запускаем пайплайн.

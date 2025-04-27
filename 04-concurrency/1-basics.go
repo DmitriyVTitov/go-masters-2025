@@ -45,10 +45,9 @@ func mutex() {
 	// Мьютекс используется для защиты общей памяти и
 	// избежания "гонки".
 	mu := &sync.Mutex{}
-
 	var i int
 
-	const gouroutinesNum = 10_0000
+	const gouroutinesNum = 100_000
 	wg := &sync.WaitGroup{}
 
 	unsafeIncrement := func() {

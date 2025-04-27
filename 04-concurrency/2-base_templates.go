@@ -45,6 +45,7 @@ func waitGroup() {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
+
 			log.Info().Msgf("Горутина %v завершила работу", i)
 		}(i)
 	}

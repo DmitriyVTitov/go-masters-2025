@@ -14,7 +14,7 @@ import (
 
 func main() {
 	// http://localhost:6060/cpu
-	// http://localhost:6060/meme
+	// http://localhost:6060/mem
 	http.Handle("/cpu", http.HandlerFunc(cpuHandler))
 	http.Handle("/mem", http.HandlerFunc(memHandler))
 

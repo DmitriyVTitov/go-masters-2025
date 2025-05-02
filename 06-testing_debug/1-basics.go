@@ -27,6 +27,8 @@ func ReverseStringWithError(s string) (string, error) {
 	return ReverseString(s), nil
 }
 
+// Для демонстрации правил для имен тестов.
+
 func lowercaseName() {}
 
 type T struct{}

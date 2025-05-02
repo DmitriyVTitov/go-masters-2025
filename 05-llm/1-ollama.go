@@ -10,6 +10,10 @@ import (
 	"github.com/ollama/ollama/api"
 )
 
+func pointer[T any](v T) *T {
+	return &v
+}
+
 func main() {
 	// Создаем клиент для подключения к Ollama
 	addr, err := url.Parse("http://192.168.0.115:11434")
@@ -19,8 +23,8 @@ func main() {
 	client := api.NewClient(addr, http.DefaultClient)
 
 	// Указываем модель, которую будем использовать
-	model := "qwen2.5:1.5b" // Можно изменить на любую другую установленную модель
-	//model := "qwen2.5-coder:7b"
+	//model := "qwen2.5:1.5b" // Можно изменить на любую другую установленную модель
+	model := "qwen2.5-coder:7b"
 
 	ctx := context.Background()
 
@@ -33,15 +37,17 @@ func main() {
 	generateReq := &api.GenerateRequest{
 		Model:  model,
 		Prompt: prompt,
-		Stream: &[]bool{true}[0],
+		Stream: pointer(true),
 	}
 
 	fmt.Printf("\nГенерация с '%s': %s\n", model, generateReq.Prompt)
-	generateRaspFunc := func(resp api.GenerateResponse) error {
+
+	generateRespFunc := func(resp api.GenerateResponse) error {
 		fmt.Print(resp.Response)
 		return nil
 	}
-	err = client.Generate(ctx, generateReq, generateRaspFunc)
+
+	err = client.Generate(ctx, generateReq, generateRespFunc)
 	if err != nil {
 		log.Fatalf("Ошибка генерации: %v", err)
 	}

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	_ "net/http/pprof" // автоматически регистрирует обработчики в DefaultServeMux
 	"sync"
+	"time"
 )
 
 // Вызов профиля:
@@ -30,7 +31,7 @@ func cpuHandler(w http.ResponseWriter, r *http.Request) {
 	wg.Add(4)
 
 	f := func() {
-		for i := range 10_000_000 {
+		for i := range 100_000_000 {
 			_ = math.Sin(float64(i))
 		}
 
@@ -52,6 +53,8 @@ func memHandler(w http.ResponseWriter, r *http.Request) {
 	for i := range len(buf) {
 		buf[i] = byte(i % 256)
 	}
+
+	time.Sleep(time.Second * 15)
 
 	for i := range len(buf) {
 		_ = buf[i]

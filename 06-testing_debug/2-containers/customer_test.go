@@ -31,12 +31,12 @@ func TestCustomerRepository(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	/*t.Cleanup(func() {
+	t.Cleanup(func() {
 		if err := pgContainer.Terminate(ctx); err != nil {
 			t.Fatal(err)
 			t.Fatalf("failed to terminate pgContainer: %s", err)
 		}
-	})*/
+	})
 
 	connStr, err := pgContainer.ConnectionString(ctx, "sslmode=disable")
 	assert.NoError(t, err)

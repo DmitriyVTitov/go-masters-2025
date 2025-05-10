@@ -2,21 +2,23 @@ package highload
 
 import (
 	"context"
-	"log"
 	"testing"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/rs/zerolog/log"
 )
 
 func TestMain(m *testing.M) {
 	ctx := context.Background()
 
 	// Создаем пул соединений
-	pool, err := pgxpool.New(ctx, dbURL)
+	p, err := pgxpool.New(ctx, dbURL)
 	if err != nil {
-		log.Fatal().Msgf("Unable to create connection pool: %v\n", err)
+		log.Fatal().Msgf("не удалось создать пул соединений: %v\n", err)
 	}
-	defer pool.Close()
+	defer p.Close()
+
+	pool = p
 
 	// Подготовка таблицы (опционально)
 	_, err = pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS test_table (
@@ -26,7 +28,12 @@ func TestMain(m *testing.M) {
 		created_at TIMESTAMP
 	)`)
 	if err != nil {
-		log.Fatal().Msgf("Unable to create table: %v\n", err)
+		log.Fatal().Msgf("не удалось создать таблицу: %v\n", err)
+	}
+
+	_, err = pool.Exec(ctx, `TRUNCATE TABLE test_table;`)
+	if err != nil {
+		log.Fatal().Msgf("не удалось очистить таблицу: %v\n", err)
 	}
 
 	m.Run()

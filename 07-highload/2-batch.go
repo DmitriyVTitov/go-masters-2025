@@ -3,17 +3,21 @@ package highload
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/rs/zerolog/log"
 )
 
 const (
-	dbURL        = "postgres://user:password@localhost:5432/dbname"
-	insertQuery  = "INSERT INTO test_table (id, name, value, created_at) VALUES ($1, $2, $3, $4)"
-	rowsToInsert = 100_000
+	dbURL       = "postgres://postgres:password@localhost:5432/db"
+	insertQuery = `
+		INSERT INTO
+			test_table (id, name, value, created_at)
+		VALUES
+			($1, $2, $3, $4);`
+	rowsToInsert = 10_000
 	batchSize    = 1000 // Размер пакета
 )
 
@@ -30,12 +34,12 @@ func simpleInsert() {
 	for i := 1; i <= rowsToInsert; i++ {
 		_, err := pool.Exec(ctx, insertQuery, i, fmt.Sprintf("Item %d", i), float64(i)*1.1, time.Now())
 		if err != nil {
-			log.Printf("Failed to insert row %d: %v\n", i, err)
+			log.Fatal().Msgf("Failed to insert row %d: %v\n", i, err)
 		}
 	}
 
 	elapsed := time.Since(start)
-	log.Printf("Inserted %d rows one by one in %s\n", rowsToInsert, elapsed)
+	log.Info().Msgf("Добавлено %d строк по одной за %s\n", rowsToInsert, elapsed)
 }
 
 func batchInsert() {
@@ -49,8 +53,7 @@ func batchInsert() {
 
 	for i := 1; i <= rowsToInsert; i++ {
 		batch.Queue(
-			"INSERT INTO test_table (id, name, value, created_at) VALUES ($1, $2, $3, $4)",
-			i, fmt.Sprintf("Item %d", i), float64(i)*1.1, time.Now(),
+			insertQuery, i, fmt.Sprintf("Item %d", i), float64(i)*1.1, time.Now(),
 		)
 		count++
 
@@ -59,16 +62,16 @@ func batchInsert() {
 			br := pool.SendBatch(ctx, batch)
 			_, err := br.Exec()
 			if err != nil {
-				log.Printf("Batch insert failed: %v\n", err)
+				log.Fatal().Msgf("Batch insert failed: %v\n", err)
 			}
 			err = br.Close()
 			if err != nil {
-				log.Printf("Batch close failed: %v\n", err)
+				log.Fatal().Msgf("Batch close failed: %v\n", err)
 			}
 			batch = &pgx.Batch{} // Создаем новый пакет
 		}
 	}
 
 	elapsed := time.Since(start)
-	log.Printf("Inserted %d rows using batches in %s\n", rowsToInsert, elapsed)
+	log.Info().Msgf("Добавлено %d строк пакетами по %d за %s\n", rowsToInsert, elapsed)
 }

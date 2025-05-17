@@ -25,3 +25,5 @@ go.work.sum
 
 # env file
 .env
+
+/09-observability/docker-compose/postgres_data/

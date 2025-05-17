@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Мониторинг приложения на хосте (вне Docker-сети)
+  - job_name: "host-app"
+    metrics_path: "/metrics" # Укажите ваш эндпоинт метрик
+    static_configs:
+      - targets: ["host.docker.internal:8080"] # Для Windows/Mac
+        # Для Linux используйте:
+        # - targets: ['172.17.0.1:8080']  # Docker bridge IP
+
+  # Мониторинг контейнерного приложения (если нужно)
+  - job_name: "container-app"
+    static_configs:
+      - targets: ["app:8080"]
+
+  # Мониторинг Jaeger
+  - job_name: "jaeger"
+    static_configs:
+      - targets: ["jaeger:14269"]

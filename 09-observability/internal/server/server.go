@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"net/http"
+	"net/http/pprof"
 	"time"
 
 	"go-masters/09-observability/internal/metrics"
@@ -33,10 +34,28 @@ func NewServer() *Server {
 		middleware.Recoverer,                 // Восстановление после паник
 	)
 
-	// Инициализация маршрутов
+	// Эндпоинты pprof
+	// http://localhost:8080/debug/pprof/
+	r.Get("/debug/pprof/", pprof.Index)
+	r.Get("/debug/pprof/cmdline", pprof.Cmdline)
+	r.Get("/debug/pprof/profile", pprof.Profile)
+	r.Get("/debug/pprof/symbol", pprof.Symbol)
+	r.Get("/debug/pprof/trace", pprof.Trace)
+	r.Get("/debug/pprof/allocs", pprof.Handler("allocs").ServeHTTP)
+	r.Get("/debug/pprof/block", pprof.Handler("block").ServeHTTP)
+	r.Get("/debug/pprof/goroutine", pprof.Handler("goroutine").ServeHTTP)
+	r.Get("/debug/pprof/heap", pprof.Handler("heap").ServeHTTP)
+	r.Get("/debug/pprof/mutex", pprof.Handler("mutex").ServeHTTP)
+	r.Get("/debug/pprof/threadcreate", pprof.Handler("threadcreate").ServeHTTP)
+
+	// HealthCheck - статус системы
 	r.Get("/health", healthHandler)
+
+	// Эндпоинт для Prometheus
+	r.Get("/metrics", promhttp.Handler().ServeHTTP)
+
+	// Инициализация маршрутов
 	r.Get("/hello", helloHandler)
-	r.Get("/metrics", promhttp.Handler().ServeHTTP) // Эндпоинт для Prometheus
 
 	return &Server{
 		router: r,

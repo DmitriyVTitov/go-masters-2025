@@ -118,7 +118,7 @@ func twoSumBruteForce(nums []int, target int) [][2]int {
 	var result [][2]int
 	n := len(nums)
 
-	for i := 0; i < n; i++ {
+	for i := range n {
 		for j := i + 1; j < n; j++ {
 			if nums[i]+nums[j] == target {
 				result = append(result, [2]int{nums[i], nums[j]})

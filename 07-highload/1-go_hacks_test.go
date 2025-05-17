@@ -60,7 +60,7 @@ func BenchmarkBruteForce(b *testing.B) {
 	target := 1999 // Максимально возможная сумма
 
 	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		twoSumBruteForce(nums, target)
 	}
 }
@@ -73,7 +73,7 @@ func BenchmarkHashMethod(b *testing.B) {
 	target := 1999
 
 	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		twoSumHash(nums, target)
 	}
 }

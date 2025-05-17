@@ -73,5 +73,6 @@ func batchInsert() {
 	}
 
 	elapsed := time.Since(start)
-	log.Info().Msgf("Добавлено %d строк пакетами по %d за %s\n", rowsToInsert, elapsed)
+	log.Info().Msgf("Добавлено %d строк пакетами по %d за %s\n",
+		rowsToInsert, batchSize, elapsed)
 }

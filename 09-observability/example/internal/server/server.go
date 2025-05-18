@@ -6,8 +6,8 @@ import (
 	"net/http/pprof"
 	"time"
 
-	"go-masters/09-observability/internal/metrics"
-	"go-masters/09-observability/internal/telemetry"
+	"go-masters/09-observability/example/internal/metrics"
+	"go-masters/09-observability/example/internal/telemetry"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

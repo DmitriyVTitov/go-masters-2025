@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"go-masters/09-observability/internal/server"
+	"go-masters/09-observability/example/internal/server"
 
 	"github.com/rs/zerolog/log"
 )

@@ -24,7 +24,7 @@ services:
     image: jaegertracing/all-in-one:1.48
     ports:
       - "16686:16686"   # UI
-      - "14268:14268"   # HTTP collector
+      - "4318:4318"     # HTTP collector
       - "6831:6831/udp" # Jaeger agent (UDP)
     environment:
       - LOG_LEVEL=debug

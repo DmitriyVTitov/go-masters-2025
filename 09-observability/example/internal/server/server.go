@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"math/rand"
 	"net/http"
 	"net/http/pprof"
 	"time"
@@ -14,6 +15,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -22,7 +24,7 @@ type Server struct {
 	server *http.Server
 }
 
-func NewServer() *Server {
+func New() *Server {
 	r := chi.NewRouter()
 
 	// Настройка middleware
@@ -119,7 +121,8 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	span := trace.SpanFromContext(ctx)
 	defer span.End()
 
-	log.Ctx(ctx).Info().Msg("Обработка запроса hello")
+	log.Info().Msg("Обработка запроса hello")
+	span.AddEvent("Обработка запроса hello")
 
 	name := r.URL.Query().Get("name")
 	if name == "" {
@@ -128,6 +131,10 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Hello, " + name + "!"))
+
+	if rand.Intn(10) < 5 {
+		span.SetStatus(codes.Error, "random error")
+	}
 }
 
 // RequestLoggerMiddleware - middleware для логирования запросов

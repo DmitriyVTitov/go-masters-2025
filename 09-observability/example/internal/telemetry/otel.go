@@ -69,8 +69,8 @@ func newTraceProvider(ctx context.Context, endpoint string) (*trace.TracerProvid
 
 	traceRes := resource.NewWithAttributes(
 		semconv.SchemaURL,
-		semconv.ServiceNamespace("go-masterclass"),
-		semconv.ServiceName("ugc-app"),
+		semconv.ServiceNamespace("go-masters"),
+		semconv.ServiceName("observability-demo"),
 	)
 
 	traceProvider := trace.NewTracerProvider(

@@ -17,7 +17,7 @@ func main() {
 	defer cancel()
 
 	// Инициализируем сервер
-	srv := server.NewServer()
+	srv := server.New()
 
 	// Запускаем сервер в отдельной горутине
 	go func() {

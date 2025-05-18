@@ -1,3 +1,8 @@
+###
+### docker build -f .\10-cloud_ready\cloudapp\Dockerfile -t cloud-app .
+### docker run --rm -p 8080:8080 --name cloud-app cloud-app
+###
+
 # Этап сборки (builder)
 FROM golang:1.24-alpine AS builder
 
@@ -20,10 +25,12 @@ COPY . .
 # Флаги:
 # - CGO_ENABLED=0 - отключаем CGO для полностью статического бинарника
 # - ldflags="-s -w" - уменьшаем размер бинарника
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /app/main .
+# Build the application (two levels down)
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" \
+    -o /app/cloud-app ./10-cloud_ready/cloudapp/cmd
 
 # Этап запуска (runtime)
-FROM alpine:3.18
+FROM alpine:3.21
 
 # Устанавливаем tzdata для работы с временными зонами
 RUN apk add --no-cache tzdata ca-certificates
@@ -32,9 +39,10 @@ RUN apk add --no-cache tzdata ca-certificates
 WORKDIR /app
 
 # Копируем бинарник из этапа сборки
-COPY --from=builder /app/main /app/main
+COPY --from=builder /app/cloud-app /app/bin/cloud-app
 # Копируем конфигурационные файлы
-COPY configs /app/configs
+COPY --from=builder /app/10-cloud_ready/cloudapp/cmd/docker-config.yaml /app/bin/config.yaml
+COPY --from=builder /app/10-cloud_ready/cloudapp/migrations /app/migrations
 
 # Переменные окружения по умолчанию
 ENV APP_ENV=production \
@@ -43,5 +51,7 @@ ENV APP_ENV=production \
 # Открываем порт (если приложение использует)
 EXPOSE 8080
 
+WORKDIR /app/bin
+
 # Команда запуска
-CMD ["/app/main"]
+CMD ["./cloud-app"]

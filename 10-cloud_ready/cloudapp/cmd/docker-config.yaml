@@ -1,0 +1,2 @@
+port: 8080
+db_conn_str: "postgres://postgres:password@host.docker.internal:5432/db?sslmode=disable"
